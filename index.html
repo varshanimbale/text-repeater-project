@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Repeater Pro</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 28px;
+    animation: slideInDown 0.8s ease-out;
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    min-height: 500px;
+}
+
+.input-section h3,
+.output-section h3 {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    animation: slideInUp 0.6s ease-out;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    resize: none;
+    transition: 0.3s;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    animation: slideInUp 0.6s ease-out 0.1s both;
+}
+
+textarea:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.controls {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.control-group label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input[type="number"], select {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 2px solid #ddd;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+input[type="number"]:focus, select:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.buttons {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    animation: slideInUp 0.7s ease-out 0.2s both;
+}
+
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+.repeat { background: linear-gradient(135deg, #667eea, #5568d3); }
+.copy { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.clear { background: linear-gradient(135deg, #fa709a, #fee140); color: #333; }
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+button:active {
+    transform: translateY(-1px);
+}
+
+.output-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.output-stats {
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    color: #666;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: #667eea;
+    font-size: 16px;
+    animation: bounceIn 0.6s ease-out;
+}
+
+.output {
+    flex: 1;
+    padding: 15px;
+    background: #f8f9ff;
+    border: 2px solid #e0e0ff;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-y: auto;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #333;
+    max-height: 450px;
+    animation: bounceIn 0.6s ease-out;
+}
+
+.output::-webkit-scrollbar {
+    width: 8px;
+}
+
+.output::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.output::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 4px;
+}
+
+.output::-webkit-scrollbar-thumb:hover {
+    background: #5568d3;
+}
+
+.empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+    text-align: center;
+    font-size: 14px;
+}
+
+.warning {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #856404;
+    display: none;
+}
+
+.warning.show {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    
+    .buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+.share-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.share-section h3 {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.share-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.share-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border: 2px solid;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: white;
+}
+
+.share-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.share-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.share-btn i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    transition: transform 0.3s ease;
+}
+
+.share-btn:hover i {
+    transform: scale(1.2) rotate(5deg);
+}
+
+.whatsapp {
+    background: linear-gradient(135deg, #25d366, #20ba5a);
+    border-color: #20ba5a;
+}
+
+.telegram {
+    background: linear-gradient(135deg, #0088cc, #007bb8);
+    border-color: #007bb8;
+}
+
+.sms {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    border-color: #ee5a52;
+}
+
+.email {
+    background: linear-gradient(135deg, #ff9800, #e68900);
+    border-color: #e68900;
+}
+
+.share-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.share-btn:hover i {
+    animation: bounceIn 0.4s ease-out;
+}
+
+.share-btn:active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.share-section {
+    animation: slideInUp 0.6s ease-out 0.3s both;
+}
+
+.share-btn {
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+.share-btn:nth-child(1) {
+    animation-delay: 0.4s;
+}
+
+.share-btn:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.share-btn:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.share-btn:nth-child(4) {
+    animation-delay: 0.7s;
+}
+
+@media (max-width: 768px) {
+    .share-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>✨ Text Repeater Pro</h2>
+
+    <div class="main-layout">
+        <!-- Input Section -->
+        <div class="input-section">
+            <h3>Input</h3>
+            <textarea id="text" placeholder="Enter your text here..."></textarea>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="count">Repeat Count</label>
+                    <input type="number" id="count" value="1" min="1" max="100000">
+                </div>
+
+                <div class="control-group">
+                    <label for="separator">Separator</label>
+                    <select id="separator">
+                        <option value="space">Space ( )</option>
+                        <option value="newline">New Line ↵</option>
+                        <option value=",">Comma (,)</option>
+                        <option value="-">Dash (-)</option>
+                        <option value="|">Pipe (|)</option>
+                        <option value=";">Semicolon (;)</option>
+                        <option value="→">Arrow (→)</option>
+                        <option value="•">Bullet (•)</option>
+                        <option value="#">Hashtag (#)</option>
+                        <option value="*">Asterisk (*)</option>
+                        <option value="✓">Checkmark (✓)</option>
+                        <option value="★">Star (★)</option>
+                        <option value="~">Tilde (~)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="repeat" onclick="repeatText()">Repeat</button>
+                <button class="copy" onclick="copyText()">Copy</button>
+                <button class="clear" onclick="clearText()">Clear</button>
+            </div>
+
+            <div class="warning" id="warning">⚠️ Large output detected! Text is very long and may be slow to display.</div>
+
+            <!-- Share Section -->
+            <div class="share-section">
+                <h3>📤 Share Output</h3>
+                <div class="share-buttons">
+                    <button class="share-btn whatsapp" onclick="shareViaWhatsApp()" title="Share on WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp
+                    </button>
+                    <button class="share-btn telegram" onclick="shareViaTelegram()" title="Share on Telegram">
+                        <i class="fab fa-telegram"></i>
+                        Telegram
+                    </button>
+                    <button class="share-btn sms" onclick="shareViaSMS()" title="Share via SMS">
+                        <i class="fas fa-sms"></i>
+                        SMS
+                    </button>
+                    <button class="share-btn email" onclick="shareViaEmail()" title="Share via Email">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="output-section">
+            <div class="output-header">
+                <h3>Output</h3>
+                <div class="output-stats">
+                    <div class="stat">
+                        <span>Characters</span>
+                        <span class="stat-value" id="charCount">0</span>
+                    </div>
+                    <div class="stat">
+                        <span>Lines</span>
+                        <span class="stat-value" id="lineCount">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="output" id="output">
+                <div class="empty-state">Output will appear here...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function getSeparator() {
+    let sep = document.getElementById("separator").value;
+
+    if (sep === "space") return " ";
+    if (sep === "newline") return "\n";
+
+    return sep;
+}
+
+function updateStats() {
+    let output = document.getElementById("output");
+    let text = output.innerText;
+    
+    if (text === "Output will appear here...") {
+        text = "";
+    }
+    
+    let charCount = text.length;
+    let lineCount = text ? text.split('\n').length : 0;
+    
+    document.getElementById("charCount").innerText = charCount.toLocaleString();
+    document.getElementById("lineCount").innerText = lineCount.toLocaleString();
+    
+    // Show warning if output is very large
+    let warning = document.getElementById("warning");
+    if (charCount > 50000) {
+        warning.classList.add("show");
+    } else {
+        warning.classList.remove("show");
+    }
+    
+    // Enable/disable share buttons based on output
+    updateShareButtonsState();
+}
+
+function updateShareButtonsState() {
+    let output = document.getElementById("output");
+    let text = output.innerText;
+    let inputText = document.getElementById("text").value.trim();
+    
+    // Button should only be enabled if there's valid output AND input was provided
+    let hasContent = text && text !== "Output will appear here..." && inputText.length > 0;
+    
+    document.querySelectorAll(".share-btn").forEach(btn => {
+        btn.disabled = !hasContent;
+    });
+}
+
+function repeatText() {
+    let text = document.getElementById("text").value;
+    let count = parseInt(document.getElementById("count").value);
+    let separator = getSeparator();
+
+    if (!text) {
+        alert("Please enter text!");
+        return;
+    }
+
+    if (count > 100000) {
+        alert("Maximum repeat count is 100,000!");
+        return;
+    }
+
+    let result = "";
+
+    for (let i = 0; i < count; i++) {
+        result += text;
+        if (i !== count - 1) {
+            result += separator;
+        }
+    }
+
+    let output = document.getElementById("output");
+    output.innerText = result;
+    updateStats();
+}
+
+function copyText() {
+    let output = document.getElementById("output");
+    let text = output.innerText;
+
+    if (!text || text === "Output will appear here...") {
+        alert("Nothing to copy!");
+        return;
+    }
+
+    navigator.clipboard.writeText(text);
+    alert("Copied to clipboard!");
+}
+
+function clearText() {
+    document.getElementById("text").value = "";
+    document.getElementById("output").innerHTML = '<div class="empty-state">Output will appear here...</div>';
+    document.getElementById("charCount").innerText = "0";
+    document.getElementById("lineCount").innerText = "0";
+    document.getElementById("warning").classList.remove("show");
+    updateShareButtonsState();
+}
+
+function shareViaWhatsApp() {
+    let output = document.getElementById("output");
+    let text = output.innerText;
+    let inputText = document.getElementById("text").value.trim();
+
+    // Validation check
+    if (!text || text === "Output will appear here..." || !inputText) {
+        alert("❌ Please enter text and click 'Repeat' to generate output first!");
+        return;
+    }
+
+    let encodedText = encodeURIComponent(text);
+    let whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+    window.open(whatsappUrl, '_blank');
+}
+
+function shareViaTelegram() {
+    let output = document.getElementById("output");
+    let text = output.innerText;
+    let inputText = document.getElementById("text").value.trim();
+
+    // Validation check
+    if (!text || text === "Output will appear here..." || !inputText) {
+        alert("❌ Please enter text and click 'Repeat' to generate output first!");
+        return;
+    }
+
+    let encodedText = encodeURIComponent(text);
+    let telegramUrl = `https://t.me/share/url?url=&text=${encodedText}`;
+    window.open(telegramUrl, '_blank');
+}
+
+function shareViaSMS() {
+    let output = document.getElementById("output");
+    let text = output.innerText;
+    let inputText = document.getElementById("text").value.trim();
+
+    // Validation check
+    if (!text || text === "Output will appear here..." || !inputText) {
+        alert("❌ Please enter text and click 'Repeat' to generate output first!");
+        return;
+    }
+
+    let encodedText = encodeURIComponent(text);
+    let smsUrl = `sms:?body=${encodedText}`;
+    window.location.href = smsUrl;
+}
+
+function shareViaEmail() {
+    let output = document.getElementById("output");
+    let text = output.innerText;
+    let inputText = document.getElementById("text").value.trim();
+
+    // Validation check
+    if (!text || text === "Output will appear here..." || !inputText) {
+        alert("❌ Please enter text and click 'Repeat' to generate output first!");
+        return;
+    }
+
+    let encodedText = encodeURIComponent(text);
+    let emailUrl = `mailto:?subject=Text Repeater Output&body=${encodedText}`;
+    window.location.href = emailUrl;
+}
+
+// Initialize share buttons as disabled on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateShareButtonsState();
+    
+    // Listen for input changes
+    document.getElementById("text").addEventListener("input", function() {
+        updateShareButtonsState();
+    });
+    
+    // Listen for repeat count changes
+    document.getElementById("count").addEventListener("change", function() {
+        // If output exists and input is valid, keep buttons enabled
+        updateShareButtonsState();
+    });
+    
+    // Listen for separator changes
+    document.getElementById("separator").addEventListener("change", function() {
+        // If output exists and input is valid, keep buttons enabled
+        updateShareButtonsState();
+    });
+});
+
+</script>
+
+</body>
+</html>
